@@ -1,101 +1,137 @@
-# SEOZoom MCP Server
+<p align="center">
+  <h1 align="center">SEOZoom MCP Server</h1>
+  <p align="center">
+    Server MCP che espone le API di <a href="https://www.seozoom.it/">SEOZoom</a> come tool per Claude Desktop, Claude Code, Cursor e altri client MCP compatibili.
+  </p>
+  <p align="center">
+    <img src="https://img.shields.io/badge/python-3.12+-blue" alt="Python">
+    <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
+    <img src="https://img.shields.io/badge/tools-25-orange" alt="Tools">
+    <img src="https://img.shields.io/badge/transport-stdio-lightgrey" alt="Transport">
+  </p>
+</p>
 
-Server MCP (Model Context Protocol) che espone le API di SEOZoom come tool utilizzabili da Claude Desktop, Claude Code, Cursor e altri client MCP compatibili.
+---
 
-## Requisiti
+## Quick Start
 
-- Python 3.12+
-- [uv](https://docs.astral.sh/uv/) (package manager)
-- API key SEOZoom (ottenibile dal proprio profilo su seozoom.it)
+**Requisiti:** [Python 3.12+](https://www.python.org/) e [uv](https://docs.astral.sh/uv/)
 
-## Installazione
+#### 1. Clona e installa
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/Sozione/seozoom-mcp.git
 cd seozoom-mcp
 uv sync
 ```
 
-## Configurazione
+#### 2. Configura
 
-### Variabili d'ambiente
+Aggiungi la configurazione JSON nel file appropriato:
+
+| Dove vuoi usarlo | File di configurazione | Effetto |
+|:---|:---|:---|
+| Un singolo progetto | `.mcp.json` nella root del progetto | Attivo solo in quel progetto |
+| Tutti i progetti | `~/.claude/claude_code_config.json` | Attivo ovunque in Claude Code |
+| Claude Desktop (macOS) | `~/Library/Application Support/Claude/claude_desktop_config.json` | Attivo in Claude Desktop |
+| Claude Desktop (Windows) | `%APPDATA%\Claude\claude_desktop_config.json` | Attivo in Claude Desktop |
+
+```json
+{
+  "mcpServers": {
+    "seozoom": {
+      "command": "uv",
+      "args": ["--directory", "/path/to/seozoom-mcp", "run", "seozoom-mcp"],
+      "env": {
+        "SEOZOOM_API_KEY": "la-tua-api-key"
+      }
+    }
+  }
+}
+```
+
+> Sostituisci `/path/to/seozoom-mcp` con il percorso reale e `la-tua-api-key` con la tua API key SEOZoom (la trovi nel tuo [profilo SEOZoom](https://www.seozoom.it/)).
+
+#### 3. Avvia
+
+Apri **Claude Code** (o Claude Desktop) e verifica con `/mcp` che il server sia attivo.
+
+> Il server si avvia e si chiude automaticamente con Claude. Non serve gestirlo manualmente.
+
+---
+
+## Guida all'uso in Claude Code
+
+Una volta configurato, puoi chiedere a Claude qualsiasi cosa riguardi la SEO e lui usera automaticamente i tool SEOZoom. Alcuni esempi:
+
+**Analisi keyword**
+```
+Quali sono le metriche per la keyword "regime forfettario"?
+Trova le keyword correlate a "partita iva"
+Mostrami la SERP per "calcolatore tasse forfettario"
+```
+
+**Analisi dominio**
+```
+Analizza il dominio repubblica.it
+Quali sono le migliori pagine di corriere.it?
+Chi sono i competitor organici di aranzulla.it?
+Mostrami le keyword per cui ilsole24ore.it appare nelle AI Overview
+```
+
+**Analisi URL**
+```
+Quante keyword ha posizionato questa pagina? https://example.com/pagina
+Qual e il Page Zoom Authority di questa URL?
+Trova le keyword con potenziale non sfruttato per questa URL
+```
+
+**Gestione progetti**
+```
+Mostrami la lista dei miei progetti SEOZoom
+Qual e la panoramica del progetto 190197?
+Quali pagine del mio progetto stanno perdendo traffico?
+```
+
+**Monitoraggio costi**
+```
+Quante unita API mi restano?
+```
+
+> Non serve specificare quale tool usare: Claude sceglie automaticamente quello giusto in base alla domanda.
+
+---
+
+## Variabili d'ambiente
 
 | Variabile | Obbligatoria | Default | Descrizione |
-|-----------|:---:|---------|-------------|
-| `SEOZOOM_API_KEY` | Si | - | API key dal profilo SEOZoom |
-| `SEOZOOM_DEFAULT_DB` | No | `it` | Database paese: `it`, `es`, `fr`, `de`, `uk` |
+|:---|:---:|:---:|:---|
+| `SEOZOOM_API_KEY` | Si | — | API key dal profilo SEOZoom |
+| `SEOZOOM_DEFAULT_DB` | No | `it` | Database paese: `it` `es` `fr` `de` `uk` |
 
-### Claude Code
-
-Crea un file `.mcp.json` nella root del progetto in cui lavori (o nella root di `seozoom-mcp`):
-
-```json
-{
-  "mcpServers": {
-    "seozoom": {
-      "command": "uv",
-      "args": ["--directory", "/path/to/seozoom-mcp", "run", "seozoom-mcp"],
-      "env": {
-        "SEOZOOM_API_KEY": "la-tua-api-key"
-      }
-    }
-  }
-}
-```
-
-Al primo avvio, Claude Code chiederà di approvare il server. Verifica con `/mcp` che sia attivo.
-
-### Claude Desktop
-
-Aggiungi in `claude_desktop_config.json` (su macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`):
-
-```json
-{
-  "mcpServers": {
-    "seozoom": {
-      "command": "uv",
-      "args": ["--directory", "/path/to/seozoom-mcp", "run", "seozoom-mcp"],
-      "env": {
-        "SEOZOOM_API_KEY": "la-tua-api-key"
-      }
-    }
-  }
-}
-```
-
-### Test con MCP Inspector
-
-```bash
-SEOZOOM_API_KEY=la-tua-api-key uv run mcp dev src/seozoom_mcp/server.py
-```
-
-## Struttura progetto
-
-```
-seozoom-mcp/
-├── pyproject.toml              # Dipendenze e entry point
-└── src/
-    └── seozoom_mcp/
-        ├── __init__.py
-        ├── client.py           # Client HTTP async per le API SEOZoom
-        └── server.py           # Server FastMCP con 25 tool
-```
+---
 
 ## Tool disponibili (25)
 
-### Keywords (4)
+Ogni risposta include automaticamente il costo della chiamata:
+
+```
+[Costo: 10 unit | Rimanenti: 4950 | Risultati: 1]
+```
+
+### Keywords — 4 tool
 
 | Tool | Parametri | Descrizione |
-|------|-----------|-------------|
+|:---|:---|:---|
 | `keyword_metrics` | keywords, db? | Volume di ricerca, KD, CPC, intent, trend mensili |
 | `keyword_serp` | keywords, db? | Risultati SERP attuali (fino a 50 risultati) |
 | `keyword_serp_history` | keyword, date, db? | Snapshot storico SERP per una data |
-| `keyword_related` | keyword, db?, limit? | Keyword correlate con affinità SERP |
+| `keyword_related` | keyword, db?, limit? | Keyword correlate con affinita SERP |
 
-### Domains (8)
+### Domains — 8 tool
 
 | Tool | Parametri | Descrizione |
-|------|-----------|-------------|
+|:---|:---|:---|
 | `domain_metrics` | domains, db? | Traffico stimato, keyword posizionate, ZA |
 | `domain_metrics_history` | domains, date, db? | Metriche storiche per una data |
 | `domain_authority` | domains, db? | Zoom Authority, Trust, Stability, Opportunity |
@@ -105,51 +141,64 @@ seozoom-mcp/
 | `domain_keywords` | domain, type, db?, offset?, limit? | Keyword filtrate per tipo |
 | `domain_competitors` | domains, db?, limit? | Competitor organici |
 
-**Tipi per `domain_keywords`**: `best`, `withtraffic`, `up`, `down`, `stable`, `entered`, `exited`, `bypage`, `byposition`, `newentry`
+Tipi per `domain_keywords`: `best` `withtraffic` `up` `down` `stable` `entered` `exited` `bypage` `byposition` `newentry`
 
-### URLs (4)
+### URLs — 4 tool
 
 | Tool | Parametri | Descrizione |
-|------|-----------|-------------|
+|:---|:---|:---|
 | `url_page_authority` | url, db? | Page Zoom Authority (PZA) |
 | `url_metrics` | urls, db? | Keyword totali, traffico, PZA |
 | `url_keywords` | url, db?, limit? | Keyword posizionate con volumi e CPC |
 | `url_intent_gap` | url, db?, limit? | Keyword con potenziale non sfruttato |
 
-### Projects (8)
+### Projects — 8 tool
 
 | Tool | Parametri | Descrizione |
-|------|-----------|-------------|
+|:---|:---|:---|
 | `project_list` | db? | Lista tutti i progetti |
 | `project_overview` | id, db? | Panoramica completa del progetto |
 | `project_keywords` | id, db? | Keyword monitorate |
 | `project_best_pages` | id, db?, limit? | Migliori pagine del progetto |
-| `project_pages_with_more_keywords` | id, db?, limit? | Pagine con più keyword |
+| `project_pages_with_more_keywords` | id, db?, limit? | Pagine con piu keyword |
 | `project_pages_with_potential` | id, db?, limit? | Pagine con potenziale di crescita |
 | `project_winner_pages` | id, db?, limit? | Pagine in crescita |
 | `project_loser_pages` | id, db?, limit? | Pagine in calo |
 
-### Utility (1)
+### Utility — 1 tool
 
 | Tool | Parametri | Descrizione |
-|------|-----------|-------------|
-| `check_units` | - | Controlla le unità API rimanenti (costa 10 unit) |
+|:---|:---|:---|
+| `check_units` | — | Controlla le unita API rimanenti (costa 10 unit) |
 
-### Tracking costi
+---
 
-Ogni risposta include automaticamente un header con il consumo:
+## Test con MCP Inspector
 
+```bash
+SEOZOOM_API_KEY=la-tua-api-key uv run mcp dev src/seozoom_mcp/server.py
 ```
-[Costo: 10 unit | Rimanenti: 4950 | Risultati: 1]
-```
 
-## Come è stato creato
+---
 
-### 1. Setup progetto
+## API SEOZoom
+
+Documentazione ufficiale: **[apidoc.seozoom.it](https://apidoc.seozoom.it/)**
+
+| | |
+|:---|:---|
+| Costo per chiamata | 10–120 unita per riga |
+| Database supportati | `it` `es` `fr` `de` `uk` |
+
+---
+
+## Come e stato creato
+
+### Setup progetto
 
 Inizializzato con `uv init`, che crea `pyproject.toml` e il virtualenv `.venv`.
 
-### 2. Dipendenze
+### Dipendenze
 
 ```toml
 [project]
@@ -162,10 +211,10 @@ dependencies = [
 seozoom-mcp = "seozoom_mcp.server:main"
 ```
 
-- **`mcp[cli]`**: SDK ufficiale del Model Context Protocol, include `FastMCP` per creare server in modo dichiarativo
-- **`httpx`**: Client HTTP asincrono, necessario perché i tool MCP sono funzioni `async`
+- **`mcp[cli]`** — SDK ufficiale del Model Context Protocol, include `FastMCP` per creare server in modo dichiarativo
+- **`httpx`** — Client HTTP asincrono, necessario perche i tool MCP sono funzioni `async`
 
-### 3. Client HTTP (`client.py`)
+### Client HTTP (`client.py`)
 
 Classe `SEOZoomClient` che wrappa le API REST di SEOZoom v2:
 
@@ -175,7 +224,7 @@ Classe `SEOZoomClient` che wrappa le API REST di SEOZoom v2:
 - I valori multipli (keyword, domini, URL) sono separati da pipe `|`
 - Un metodo per ogni endpoint, che restituisce il JSON di risposta
 
-### 4. Server MCP (`server.py`)
+### Server MCP (`server.py`)
 
 Creato con `FastMCP`, il framework dichiarativo dell'SDK MCP:
 
@@ -189,7 +238,7 @@ async def keyword_metrics(
     keywords: Annotated[list[str], "Lista di keyword (max 100)"],
     db: Annotated[str | None, "Database paese (it, es, fr, de, uk)"] = None,
 ) -> str:
-    """Ottieni metriche per una o più keyword: volume di ricerca, KD, CPC, intent e trend mensili."""
+    """Ottieni metriche per una o piu keyword."""
     return _fmt(await client.keyword_metrics(keywords, db))
 ```
 
@@ -199,18 +248,12 @@ Ogni tool:
 - Restituisce JSON come stringa
 - Delega la chiamata HTTP al `SEOZoomClient`
 
-### 5. Trasporto
+### Trasporto
 
 Il server usa il trasporto **stdio** (standard input/output), compatibile con Claude Desktop, Claude Code e Cursor. Il client MCP lancia il processo e comunica via stdin/stdout con messaggi JSON-RPC.
 
-### 6. API SEOZoom v2
+---
 
-Documentazione: [apidoc.seozoom.it](https://apidoc.seozoom.it/)
+## License
 
-Ogni endpoint ha:
-- Un **costo in unità API** (10-120 per riga)
-- Un **rate limit** (10-150 richieste/minuto)
-- Un **numero massimo di righe** per risposta
-- Database paese supportati: `it`, `es`, `fr`, `de`, `uk`
-
-Crediti giornalieri gratuiti: 6.500 unità API.
+MIT
