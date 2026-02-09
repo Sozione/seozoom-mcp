@@ -27,14 +27,9 @@ uv sync
 
 #### 2. Configura
 
-Aggiungi la configurazione JSON nel file appropriato:
+Aggiungi la seguente configurazione JSON nel file corretto in base al client che usi.
 
-| Dove vuoi usarlo | File di configurazione | Effetto |
-|:---|:---|:---|
-| Un singolo progetto | `.mcp.json` nella root del progetto | Attivo solo in quel progetto |
-| Tutti i progetti | `~/.claude/claude_code_config.json` | Attivo ovunque in Claude Code |
-| Claude Desktop (macOS) | `~/Library/Application Support/Claude/claude_desktop_config.json` | Attivo in Claude Desktop |
-| Claude Desktop (Windows) | `%APPDATA%\Claude\claude_desktop_config.json` | Attivo in Claude Desktop |
+> Sostituisci `/path/to/seozoom-mcp` con il percorso reale e `la-tua-api-key` con la tua API key SEOZoom (la trovi nel tuo [profilo SEOZoom](https://www.seozoom.it/)).
 
 ```json
 {
@@ -50,11 +45,26 @@ Aggiungi la configurazione JSON nel file appropriato:
 }
 ```
 
-> Sostituisci `/path/to/seozoom-mcp` con il percorso reale e `la-tua-api-key` con la tua API key SEOZoom (la trovi nel tuo [profilo SEOZoom](https://www.seozoom.it/)).
+**Claude Code** — scegli dove metterlo:
+
+| File | Effetto |
+|:---|:---|
+| `.mcp.json` nella root del progetto | Attivo solo in quel progetto |
+| `~/.claude/claude_code_config.json` | Attivo su tutti i progetti |
+
+**Claude Desktop** — aggiungi la configurazione in:
+
+| OS | File |
+|:---|:---|
+| macOS | `~/Library/Application Support/Claude/claude_desktop_config.json` |
+| Windows | `%APPDATA%\Claude\claude_desktop_config.json` |
+
+> Se il file non esiste, crealo. Se esiste gia, aggiungi `"seozoom": { ... }` dentro `"mcpServers"`.
 
 #### 3. Avvia
 
-Apri **Claude Code** (o Claude Desktop) e verifica con `/mcp` che il server sia attivo.
+- **Claude Code**: apri il terminale e verifica con `/mcp` che il server sia attivo
+- **Claude Desktop**: riavvia l'app, il server apparira nella lista dei tool
 
 > Il server si avvia e si chiude automaticamente con Claude. Non serve gestirlo manualmente.
 
