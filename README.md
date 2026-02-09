@@ -15,9 +15,23 @@
 
 ## Quick Start
 
-**Requisiti:** [Python 3.12+](https://www.python.org/) e [uv](https://docs.astral.sh/uv/)
+#### 1. Installa uv (se non lo hai)
 
-#### 1. Clona e installa
+`uv` e un package manager Python veloce. Si installa con un comando e gestisce tutto automaticamente (incluso Python).
+
+macOS / Linux:
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+Windows (PowerShell):
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+> Gia hai `uv`? Salta al passo 2.
+
+#### 2. Clona e installa
 
 ```bash
 git clone https://github.com/Sozione/seozoom-mcp.git
@@ -25,7 +39,9 @@ cd seozoom-mcp
 uv sync
 ```
 
-#### 2. Configura
+> `uv sync` scarica Python (se necessario) e installa tutte le dipendenze automaticamente.
+
+#### 3. Configura
 
 Aggiungi la seguente configurazione JSON nel file corretto in base al client che usi.
 
@@ -61,7 +77,7 @@ Aggiungi la seguente configurazione JSON nel file corretto in base al client che
 
 > Se il file non esiste, crealo. Se esiste gia, aggiungi `"seozoom": { ... }` dentro `"mcpServers"`.
 
-#### 3. Avvia
+#### 4. Avvia
 
 - **Claude Code**: apri il terminale e verifica con `/mcp` che il server sia attivo
 - **Claude Desktop**: riavvia l'app, il server apparira nella lista dei tool
