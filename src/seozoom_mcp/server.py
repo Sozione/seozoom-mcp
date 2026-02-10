@@ -1,3 +1,12 @@
+"""Server MCP per SEOZoom.
+
+Espone 24 tool + 1 utility per analisi SEO tramite il protocollo MCP (Model Context Protocol).
+Ogni tool corrisponde a un endpoint delle API SEOZoom v2 e restituisce i risultati
+formattati in JSON leggibile, con intestazione sul consumo di unità API.
+
+Trasporto: stdio (pensato per integrazione con Claude Desktop / Claude Code).
+"""
+
 from __future__ import annotations
 
 import json
@@ -7,11 +16,18 @@ from mcp.server.fastmcp import FastMCP
 
 from seozoom_mcp.client import SEOZoomClient
 
+# Inizializzazione server MCP e client API
 mcp = FastMCP("seozoom")
 client = SEOZoomClient()
 
 
 def _fmt(data: object) -> str:
+    """Formatta la risposta API in testo leggibile.
+
+    Se la risposta contiene info sulle unità consumate (UnitsUsed),
+    aggiunge un'intestazione con costo, unità rimanenti e numero risultati.
+    Il corpo viene serializzato in JSON indentato con supporto caratteri unicode.
+    """
     if isinstance(data, dict) and "UnitsUsed" in data:
         used = data.get("UnitsUsed", "?")
         remaining = data.get("UnitsRemaining", "?")
@@ -22,6 +38,7 @@ def _fmt(data: object) -> str:
 
 
 # ── Keywords ─────────────────────────────────────────────────────────────────
+# Tool per ricerca e analisi keyword: metriche, SERP, storico e correlate.
 
 @mcp.tool()
 async def keyword_metrics(
@@ -62,6 +79,7 @@ async def keyword_related(
 
 
 # ── Domains ──────────────────────────────────────────────────────────────────
+# Tool per analisi domini: metriche, authority, nicchie, pagine migliori e competitor.
 
 @mcp.tool()
 async def domain_metrics(
@@ -145,6 +163,7 @@ async def domain_competitors(
 
 
 # ── URLs ─────────────────────────────────────────────────────────────────────
+# Tool per analisi singole URL: authority, metriche, keyword e intent gap.
 
 @mcp.tool()
 async def url_page_authority(
@@ -185,6 +204,7 @@ async def url_intent_gap(
 
 
 # ── Projects ─────────────────────────────────────────────────────────────────
+# Tool per gestione e monitoraggio progetti SEOZoom: lista, overview, keyword e pagine.
 
 @mcp.tool()
 async def project_list(
@@ -263,16 +283,19 @@ async def project_loser_pages(
 
 
 # ── Utility ──────────────────────────────────────────────────────────────────
+# Tool di servizio per verificare lo stato dell'account API.
 
 @mcp.tool()
 async def check_units() -> str:
     """Controlla le unità API rimanenti (costa 10 unit)."""
+    # Esegue una chiamata minimale (keyword "test") per leggere le unità residue
     data = await client.keyword_metrics(["test"])
     remaining = data.get("UnitsRemaining", "?")
     return f"Unità API rimanenti: {remaining}"
 
 
 def main() -> None:
+    """Entry point: avvia il server MCP con trasporto stdio."""
     mcp.run(transport="stdio")
 
 
