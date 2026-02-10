@@ -5,7 +5,7 @@
   </p>
   <p align="center">
     <img src="https://img.shields.io/badge/python-3.12+-blue" alt="Python">
-    <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
+    <img src="https://img.shields.io/badge/license-AGPL--3.0-green" alt="License">
     <img src="https://img.shields.io/badge/tools-25-orange" alt="Tools">
     <img src="https://img.shields.io/badge/transport-stdio-lightgrey" alt="Transport">
   </p>
@@ -331,4 +331,10 @@ Il server usa il trasporto **stdio** (standard input/output), compatibile con Cl
 
 ## License
 
-MIT
+AGPL-3.0
+
+---
+
+## Contatti
+
+Per domande, suggerimenti o collaborazioni: **info@pasqualeverta.it**

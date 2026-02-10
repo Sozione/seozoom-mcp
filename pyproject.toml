@@ -3,7 +3,7 @@ name = "seozoom-mcp"
 version = "0.1.0"
 description = "MCP server for SEOZoom API"
 requires-python = ">=3.12"
-license = "MIT"
+license = "AGPL-3.0-or-later"
 readme = "README.md"
 keywords = ["mcp", "seozoom", "seo", "api"]
 dependencies = [
