@@ -13,6 +13,55 @@
 
 ---
 
+## Server Remoto (Lite)
+
+Non vuoi installare nulla? Usa il server MCP remoto hostato su Koyeb. Basta una URL e la tua API key SEOZoom.
+
+**URL del server:**
+```
+https://fresh-chiquita-sozione-22beccd8.koyeb.app/mcp?api_key=LA-TUA-API-KEY
+```
+
+**Claude Code** — aggiungi in `.mcp.json` o `~/.claude/claude_code_config.json`:
+```json
+{
+  "mcpServers": {
+    "seozoom": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://fresh-chiquita-sozione-22beccd8.koyeb.app/mcp?api_key=LA-TUA-API-KEY"]
+    }
+  }
+}
+```
+
+**Claude Desktop** — due opzioni:
+
+**Opzione 1 (interfaccia):** vai in **Impostazioni → Connettori → Aggiungi connettore personalizzato** e incolla la URL:
+
+<p align="center">
+  <img src="assets/claude-desktop-connector.png" alt="Claude Desktop - Aggiungi connettore personalizzato" width="600">
+</p>
+
+**Opzione 2 (JSON):** aggiungi in `claude_desktop_config.json` ([macOS](~/Library/Application%20Support/Claude/claude_desktop_config.json) | [Windows](%APPDATA%\Claude\claude_desktop_config.json)):
+```json
+{
+  "mcpServers": {
+    "seozoom": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://fresh-chiquita-sozione-22beccd8.koyeb.app/mcp?api_key=LA-TUA-API-KEY"]
+    }
+  }
+}
+```
+
+> Sostituisci `LA-TUA-API-KEY` con la tua API key SEOZoom (la trovi nel tuo [profilo SEOZoom](https://www.seozoom.it/)). Serve [Node.js](https://nodejs.org/) per `npx`.
+
+---
+
+## Installazione locale
+
+Se preferisci eseguire il server in locale (senza dipendere dal server remoto):
+
 ## Quick Start
 
 #### 1. Installa uv (se non lo hai)
